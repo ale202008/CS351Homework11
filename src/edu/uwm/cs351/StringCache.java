@@ -30,7 +30,15 @@ public class StringCache {
 //			table = temp;
 //		}
 		
-
+		for (int i = 0; i < table.length; i++) {
+			if (table[i] != null) {
+				for (int t = 0; t < table.length; t++) {
+					if (t != i && table[t] == table[i]) {
+						return -1;
+					}
+				}
+			}
+		}
 		int count = 0;
 		while (count < table.length) {
 			if (key.equals(table[hash])) return hash;
@@ -99,6 +107,9 @@ public class StringCache {
 	}
 	
 	// TODO: declare rehash helper method
+	private int rehash() {
+		return 0;
+	}
 	
 	/**
 	 * Return a string equal to the argument.  
