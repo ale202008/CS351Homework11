@@ -43,7 +43,22 @@ public class StringCache {
 		// TODO
 		
 		//Invariant 1
-
+		if (table != null && !Primes.isPrime(table.length)) return report("table length is not prime");
+		
+		
+		//Invariant 2
+		if (numEntries > table.length/2) return report("numEntries is more than half of table size");
+		
+		//Invariant 3
+		int count = 0;
+		for (int i = 0; i < table.length; i++) {
+			if (table[i] != null) {
+				count++;
+			}
+		}
+		if (count != numEntries) return report("number of non-null entries does not equal numEntries");
+		
+		
 		
 		return true;
 	}
