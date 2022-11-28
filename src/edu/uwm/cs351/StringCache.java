@@ -32,7 +32,7 @@ public class StringCache {
 		
 
 		int count = 0;
-		while (count < table.length && count > -1) {
+		while (count < table.length) {
 			if (key.equals(table[hash])) return hash;
 			if (table[hash] == null) break;
 			count++;
