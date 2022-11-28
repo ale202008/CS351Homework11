@@ -43,15 +43,15 @@ public class StringCache {
 		int count = 0;
 		while (count < table.length) {
 			if (key.equals(table[hash])) {
-				for (int i = hash-1; i >= 0; i--) {
-					if (table[i] == key) return -1;
-					if (i < 0) {
-						i = table.length -1;
-					}
-					if (i == hash) {
-						break;
-					}
-				}
+//				for (int i = hash-1; i >= 0; i--) {
+//					if (table[i] == key) return -1;
+//					if (i < 0) {
+//						i = table.length -1;
+//					}
+//					if (i == hash) {
+//						break;
+//					}
+//				}
 				return hash;
 			}
 			if (table[hash] == null) break;
@@ -99,7 +99,7 @@ public class StringCache {
 		//Invariant 4
 		for (int i = 0; table != null && i < table.length; i++) {
 			if (table[i] != null) {
-				if (findIndex(table[i]) == -1) return report("incorrect string in the array index");
+				if (findIndex(table[i]) != i) return report("incorrect string in the array index");
 			}
 		}
 		
