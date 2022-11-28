@@ -15,6 +15,17 @@ public class StringCache {
 	
 
 	// TODO: hash helper function used by wellFormed and intern
+	
+	private int findIndex(String key) {
+		int num = -1;
+		for (int i = 0; i < table.length; i++) {
+			if (table[i].equals(key)) {
+				num = i;
+				break;
+			}
+		}
+		return num;
+	}
 
 	private static Consumer<String> reporter = (s) -> { System.err.println("Invariant error: " + s); };
 	
@@ -30,6 +41,10 @@ public class StringCache {
 		// 4. every string in the array is hashed into the correct place
 		//    using backward linear probing
 		// TODO
+		
+		//Invariant 1
+
+		
 		return true;
 	}
 	
@@ -55,6 +70,7 @@ public class StringCache {
 	public String intern(String value) {
 		assert wellFormed() : "invariant broken before intern";
 		// TODO, including calling rehash if needed
+		
 		assert wellFormed() : "invariant broken after intern";
 		return value;
 	}
