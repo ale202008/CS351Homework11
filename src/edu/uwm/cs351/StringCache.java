@@ -19,15 +19,6 @@ public class StringCache {
 	private int findIndex(String key) {
 		int hash = Math.abs(key.hashCode() % table.length);
 			
-		int count = 0;
-		while (count < table.length) {
-			if (key.equals(table[hash])) {
-				return hash;
-			}
-			count++;
-			hash--;
-		}
-		
 //		if (numEntries > table.length/2) {
 //			String[] temp = new String[table.length * 2];
 //			for (int i = 0; i < table.length; i++) {
@@ -39,8 +30,14 @@ public class StringCache {
 //			table = temp;
 //		}
 		
-		
-		
+
+		int count = 0;
+		while (count < table.length && count > -1) {
+			if (key.equals(table[hash])) return hash;
+			if (table[hash] == null) break;
+			count ++;
+			hash--;
+		}
 
 		return -1;
 	}
@@ -79,7 +76,7 @@ public class StringCache {
 		//Invariant 4
 		for (int i = 0; table != null && i < table.length; i++) {
 			if (table[i] != null) {
-				if (findIndex(table[i]) != i) {
+				if (findIndex(table[i]) == -1) {
 					return report("incorrect string in the array index");
 				}
 			}
@@ -112,6 +109,11 @@ public class StringCache {
 	public String intern(String value) {
 		assert wellFormed() : "invariant broken before intern";
 		// TODO, including calling rehash if needed
+		if (value == null) {
+			return null;
+		}
+		
+		
 		
 		assert wellFormed() : "invariant broken after intern";
 		return value;
