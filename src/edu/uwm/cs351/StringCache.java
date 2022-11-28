@@ -30,18 +30,24 @@ public class StringCache {
 //			table = temp;
 //		}
 		
-		for (int i = 0; i < table.length; i++) {
-			if (table[i] != null) {
-				for (int t = 0; t < table.length; t++) {
-					if (t != i && table[t] == table[i]) {
-						return -1;
-					}
-				}
-			}
-		}
+//		for (int i = 0; i < table.length; i++) {
+//			if (table[i] != null) {
+//				for (int t = 0; t < table.length; t++) {
+//					if (t != i && table[t] == table[i]) {
+//						return -1;
+//					}
+//				}
+//			}
+//		}
+		
 		int count = 0;
 		while (count < table.length) {
-			if (key.equals(table[hash])) return hash;
+			if (key.equals(table[hash])) {
+				for (int i = hash-1; i > 0; i--) {
+					if (table[i] == key) return -1;
+				}
+				return hash;
+			}
 			if (table[hash] == null) break;
 			count++;
 			hash--;
