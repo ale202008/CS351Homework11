@@ -43,8 +43,14 @@ public class StringCache {
 		int count = 0;
 		while (count < table.length) {
 			if (key.equals(table[hash])) {
-				for (int i = hash-1; i > 0; i--) {
+				for (int i = hash-1; i >= 0; i--) {
 					if (table[i] == key) return -1;
+					if (i < 0) {
+						i = table.length -1;
+					}
+					if (i == hash) {
+						break;
+					}
 				}
 				return hash;
 			}
