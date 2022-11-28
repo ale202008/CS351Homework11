@@ -17,14 +17,32 @@ public class StringCache {
 	// TODO: hash helper function used by wellFormed and intern
 	
 	private int findIndex(String key) {
-		int num = -1;
-		for (int i = 0; i < table.length; i++) {
-			if (table[i].equals(key)) {
-				num = i;
-				break;
+		int hash = Math.abs(key.hashCode() % table.length);
+			
+		int count = 0;
+		while (count < table.length) {
+			if (key.equals(table[hash])) {
+				return hash;
 			}
+			count++;
+			hash--;
 		}
-		return num;
+		
+//		if (numEntries > table.length/2) {
+//			String[] temp = new String[table.length * 2];
+//			for (int i = 0; i < table.length; i++) {
+//				if (table[i] != null) {
+//					int inHash = Math.abs(table[i].hashCode() % temp.length);
+//					temp[inHash] = table[i];
+//				}
+//			}
+//			table = temp;
+//		}
+		
+		
+		
+
+		return -1;
 	}
 
 	private static Consumer<String> reporter = (s) -> { System.err.println("Invariant error: " + s); };
@@ -43,22 +61,29 @@ public class StringCache {
 		// TODO
 		
 		//Invariant 1
-		if (table != null && !Primes.isPrime(table.length)) return report("table length is not prime");
+		if (table == null || !Primes.isPrime(table.length)) return report("table length is not prime");
 		
 		
 		//Invariant 2
-		if (numEntries > table.length/2) return report("numEntries is more than half of table size");
+		if (table != null && numEntries > table.length/2) return report("numEntries is more than half of table size");
 		
 		//Invariant 3
 		int count = 0;
-		for (int i = 0; i < table.length; i++) {
+		for (int i = 0; table != null && i < table.length; i++) {
 			if (table[i] != null) {
 				count++;
 			}
 		}
 		if (count != numEntries) return report("number of non-null entries does not equal numEntries");
 		
-		
+		//Invariant 4
+		for (int i = 0; table != null && i < table.length; i++) {
+			if (table[i] != null) {
+				if (findIndex(table[i]) != i) {
+					return report("incorrect string in the array index");
+				}
+			}
+		}
 		
 		return true;
 	}
@@ -70,6 +95,8 @@ public class StringCache {
 	 */
 	public StringCache() {
 		// TODO
+		table = null;
+		numEntries = 0;
 		assert wellFormed() : "invariant broken in constructor"; 
 	}
 	
