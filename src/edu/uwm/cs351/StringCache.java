@@ -4,6 +4,11 @@ import java.util.function.Consumer;
 
 import edu.uwm.cs.util.Primes;
 
+/*
+ * Andrew Le
+ * Homework 11 CS 351
+ */
+
 /**
  * A class to manage string instances.
  * All equal string instances that are interned will be identical.
