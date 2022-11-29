@@ -21,13 +21,13 @@ public class StringCache {
 
 	// TODO: hash helper function used by wellFormed and intern
 	
-	private int findIndex(String key) {
-		int hash = Math.abs(key.hashCode() % table.length);
+	private int findIndex(String[] array, String key) {
+		int hash = Math.abs(key.hashCode() % array.length);
 			
 		
 		int count = 0;
-		while (count < table.length) {
-			if (key.equals(table[hash])) {
+		while (count < array.length) {
+			if (key.equals(array[hash])) {
 //				for (int i = hash-1; i >= 0; i--) {
 //					if (table[i] == key) return -1;
 //					if (i < 0) {
@@ -39,15 +39,15 @@ public class StringCache {
 //				}
 				return hash;
 			}
-			if (table[hash] == null) break;
+			if (array[hash] == null) break;
 			count++;
 			hash--;
 			if (hash < 0) {
-				hash = table.length - 1;
+				hash = array.length - 1;
 			}
 		}
 
-		return -1;
+		return hash;
 	}
 
 	private static Consumer<String> reporter = (s) -> { System.err.println("Invariant error: " + s); };
@@ -84,7 +84,7 @@ public class StringCache {
 		//Invariant 4
 		for (int i = 0; i < table.length; i++) {
 			if (table[i] != null) {
-				if (findIndex(table[i]) != i) return report("incorrect string in the array index");
+				if (findIndex(table, table[i]) != i) return report("incorrect string in the array index");
 			}
 		}
 		
@@ -105,10 +105,10 @@ public class StringCache {
 	
 	// TODO: declare rehash helper method
 	private int rehash(String[] array, String value) {
-		int index = Math.abs(value.hashCode() % table.length);
+		int index = Math.abs(value.hashCode() % array.length);
 		
 		for (int i = 0; i < array.length; ++i) {
-			if (table[i] != null && table[i] == value) {
+			if (array[i] != null && array[i].equals(value)) {
 				return i;
 			}
 		}
@@ -117,14 +117,7 @@ public class StringCache {
 			array[index] = value;
 		}
 		else {
-			for (int i = index-1; i != index; --i) {
-				if (array[i] == null) {
-					array[i] = null;
-				}
-				if (i < 0) {
-					i = array.length - 1;
-				}
-			}
+			array[findIndex(array, value)] = value;
 		}
 		
 		return -1;
@@ -146,7 +139,7 @@ public class StringCache {
 		}
 		
 		if (rehash(table, value) != -1) {
-			
+			value = table[rehash(table, value)];
 		}
 		else {
 			numEntries++;
@@ -154,11 +147,7 @@ public class StringCache {
 		
 		
 		if (numEntries > table.length/2) {
-		int newLength = table.length;
-		while (numEntries > newLength/2) {
-			newLength = Primes.nextPrime(newLength);
-		}
-		String[] temp = new String[newLength];
+		String[] temp = new String[Primes.nextPrime(4*numEntries)];
 		for (int i = 0; i < table.length; i++) {
 			if (table[i] != null) {
 				rehash(temp, table[i]);
