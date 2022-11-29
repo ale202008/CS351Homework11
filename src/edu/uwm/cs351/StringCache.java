@@ -24,26 +24,6 @@ public class StringCache {
 	private int findIndex(String key) {
 		int hash = Math.abs(key.hashCode() % table.length);
 			
-//		if (numEntries > table.length/2) {
-//			String[] temp = new String[table.length * 2];
-//			for (int i = 0; i < table.length; i++) {
-//				if (table[i] != null) {
-//					int inHash = Math.abs(table[i].hashCode() % temp.length);
-//					temp[inHash] = table[i];
-//				}
-//			}
-//			table = temp;
-//		}
-		
-//		for (int i = 0; i < table.length; i++) {
-//			if (table[i] != null) {
-//				for (int t = 0; t < table.length; t++) {
-//					if (t != i && table[t] == table[i]) {
-//						return -1;
-//					}
-//				}
-//			}
-//		}
 		
 		int count = 0;
 		while (count < table.length) {
@@ -90,11 +70,11 @@ public class StringCache {
 		
 		
 		//Invariant 2
-		if (table != null && numEntries > table.length/2) return report("numEntries is more than half of table size");
+		if (numEntries > table.length/2) return report("numEntries is more than half of table size");
 		
 		//Invariant 3
 		int count = 0;
-		for (int i = 0; table != null && i < table.length; i++) {
+		for (int i = 0; i < table.length; i++) {
 			if (table[i] != null) {
 				count++;
 			}
@@ -102,7 +82,7 @@ public class StringCache {
 		if (count != numEntries) return report("number of non-null entries does not equal numEntries");
 		
 		//Invariant 4
-		for (int i = 0; table != null && i < table.length; i++) {
+		for (int i = 0; i < table.length; i++) {
 			if (table[i] != null) {
 				if (findIndex(table[i]) != i) return report("incorrect string in the array index");
 			}
@@ -118,15 +98,38 @@ public class StringCache {
 	 */
 	public StringCache() {
 		// TODO
-		table = null;
+		table = new String[2];
 		numEntries = 0;
 		assert wellFormed() : "invariant broken in constructor"; 
 	}
 	
 	// TODO: declare rehash helper method
-	private int rehash() {
-		return 0;
+	private int rehash(String[] array, String value) {
+		int index = Math.abs(value.hashCode() % table.length);
+		
+		for (int i = 0; i < array.length; ++i) {
+			if (table[i] != null && table[i] == value) {
+				return i;
+			}
+		}
+		
+		if (array[index] == null) {
+			array[index] = value;
+		}
+		else {
+			for (int i = index-1; i != index; --i) {
+				if (array[i] == null) {
+					array[i] = null;
+				}
+				if (i < 0) {
+					i = array.length - 1;
+				}
+			}
+		}
+		
+		return -1;
 	}
+	
 	
 	/**
 	 * Return a string equal to the argument.  
@@ -142,6 +145,27 @@ public class StringCache {
 			return null;
 		}
 		
+		if (rehash(table, value) != -1) {
+			
+		}
+		else {
+			numEntries++;
+		}
+		
+		
+		if (numEntries > table.length/2) {
+		int newLength = table.length;
+		while (numEntries > newLength/2) {
+			newLength = Primes.nextPrime(newLength);
+		}
+		String[] temp = new String[newLength];
+		for (int i = 0; i < table.length; i++) {
+			if (table[i] != null) {
+				rehash(temp, table[i]);
+			}
+		}
+		table = temp;
+		}
 		
 		
 		assert wellFormed() : "invariant broken after intern";
