@@ -107,12 +107,7 @@ public class StringCache {
 	private int rehash(String[] array, String value) {
 		int index = Math.abs(value.hashCode() % array.length);
 		
-		for (int i = 0; i < array.length; ++i) {
-			if (array[i] != null && array[i].equals(value)) {
-				return i;
-			}
-		}
-		
+
 		if (array[index] == null) {
 			array[index] = value;
 		}
@@ -138,10 +133,11 @@ public class StringCache {
 			return null;
 		}
 		
-		if (rehash(table, value) != -1) {
-			value = table[rehash(table, value)];
+		if (table[findIndex(table, value)] != null) {
+			value = table[findIndex(table, value)];
 		}
 		else {
+			rehash(table, value);
 			numEntries++;
 		}
 		
